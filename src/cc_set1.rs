@@ -1,16 +1,24 @@
 fn to_base64(bin : Vec<u8>) -> String {
-    let conversion_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".as_bytes();
     assert!(bin.len() % 3 == 0); // padding not implemented
+
+    let pack24 = | index : uint | {
+        bin[index] as uint << 16 | bin[index+1] as uint << 8 | bin[index+2] as uint
+    };
+
+    let unpack6 = | c: uint, shift: uint | {
+        let mask6bits = 0x3f;
+        let conversion_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".as_bytes();
+        conversion_table[((c >> shift) & mask6bits)] as char
+    };
 
     let mut index = 0;
     let mut encoded = "".to_string();
-    let mask6bits = 0x3f;
     while index < bin.len() {
-        let x : uint = bin[index] as uint << 16 | bin[index+1] as uint << 8 | bin[index+2] as uint;
-        encoded.push(conversion_table[((x >> 18) & mask6bits)] as char);
-        encoded.push(conversion_table[((x >> 12) & mask6bits)] as char);
-        encoded.push(conversion_table[((x >>  6) & mask6bits)] as char);
-        encoded.push(conversion_table[((x      ) & mask6bits)] as char);
+        let p = pack24(index);
+        encoded.push(unpack6(p, 18));
+        encoded.push(unpack6(p, 12));
+        encoded.push(unpack6(p,  6));
+        encoded.push(unpack6(p,  0));
         index += 3;
     }
     encoded
