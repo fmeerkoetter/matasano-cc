@@ -1,0 +1,10 @@
+[package]
+
+name = "Matasano crypto challenge"
+version = "0.0.1"
+authors = [ "Frank Meerkötter <frank@meerkoetter.org>" ]
+
+[[bin]]
+
+name = "cc_set1"
+
