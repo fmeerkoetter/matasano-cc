@@ -43,16 +43,17 @@ fn hex2bin(hex: &str) -> Result<Vec<u8>, String> {
     let mut even = true;
     for c in hex.bytes() {
         let b = map_hex(c);
-        match b {
-            Ok(x)  => if even {
-                          accumulator = x << 4;
-                      }
-                      else {
-                          accumulator |= x;
-                          bin.push(accumulator);
-                          accumulator = 0;
-                      },
-            Err(e) => return Err(e),
+        if b.is_err() {
+            return Err(b.err().unwrap());
+        }
+        let x = b.ok().unwrap();
+        if even {
+            accumulator = x << 4;
+        }
+        else {
+            accumulator |= x;
+            bin.push(accumulator);
+            accumulator = 0;
         }
         even = !even;
     }
