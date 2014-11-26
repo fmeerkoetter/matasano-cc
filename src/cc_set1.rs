@@ -91,26 +91,18 @@ fn bin2hex(bin: Vec<u8>) -> String {
     result
 }
 
-fn set1_exercise2() {
-    let lhs = "1c0111001f010100061a024b53535009181c";
-    let lhs_bin = hex2bin(lhs);
-    if lhs_bin.is_err() {
-        println!("{}", lhs_bin);
-        return;
-    }
+fn set1_exercise2() -> Result<(), String> {
+    let lhs = try!(hex2bin("1c0111001f010100061a024b53535009181c"));
+    let rhs = try!(hex2bin("686974207468652062756c6c277320657965"));
 
-    let rhs = "686974207468652062756c6c277320657965";
-    let rhs_bin = hex2bin(rhs);
-    if rhs_bin.is_err() {
-        println!("{}", lhs_bin);
-        return;
-    }
-
-    assert!(bin2hex(xor(lhs_bin.ok().unwrap(), rhs_bin.ok().unwrap())).as_slice()
-        == "746865206b696420646f6e277420706c6179");
+    assert!(bin2hex(xor(lhs, rhs)).as_slice() == "746865206b696420646f6e277420706c6179");
+    Ok(())
 }
 
 fn main() {
     set1_exercise1();
-    set1_exercise2();
+    match set1_exercise2() {
+        Ok(_)  => (),
+        Err(e) => println!("{}", e),
+    }
 }
