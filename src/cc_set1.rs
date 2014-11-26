@@ -72,8 +72,9 @@ fn set1_exercise1() {
 }
 
 fn xor(lhs : Vec<u8>, rhs : Vec<u8>) -> Vec<u8> {
+    assert_eq!(lhs.len(), rhs.len()); 
     let mut it = lhs.iter().zip(rhs.iter());
-    let mut result = Vec::new();
+    let mut result = Vec::with_capacity(lhs.len());
     for p in it {
         let (l, r) = p;
         result.push(*l ^ *r);
