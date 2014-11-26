@@ -60,17 +60,15 @@ fn hex2bin(hex: &str) -> Result<Vec<u8>, String> {
     Ok(bin)
 }
 
-fn set1_exercise1() {
+fn set1_exercise1() -> Result<(), String> {
     let input = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120\
                  706f69736f6e6f7573206d757368726f6f6d";
     let expected_output = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3\
                            VzIG11c2hyb29t";
 
-    let bin = hex2bin(input);
-    match bin {
-        Ok(bin) => assert!(to_base64(bin).as_slice() == expected_output),
-        Err(e) => println!("{}", e),
-    }
+    let bin = try!(hex2bin(input));
+    assert!(to_base64(bin).as_slice() == expected_output);
+    Ok(())
 }
 
 fn xor(lhs : Vec<u8>, rhs : Vec<u8>) -> Vec<u8> {
@@ -103,7 +101,11 @@ fn set1_exercise2() -> Result<(), String> {
 }
 
 fn main() {
-    set1_exercise1();
+    match set1_exercise1() {
+        Ok(_)  => (),
+        Err(e) => println!("{}", e),
+    }
+
     match set1_exercise2() {
         Ok(_)  => (),
         Err(e) => println!("{}", e),
