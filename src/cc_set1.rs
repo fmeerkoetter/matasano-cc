@@ -61,8 +61,10 @@ fn hex2bin(hex: &str) -> Result<Vec<u8>, String> {
 }
 
 fn set1_exercise1() {
-    let input = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
-    let expected_output = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
+    let input = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120\
+                 706f69736f6e6f7573206d757368726f6f6d";
+    let expected_output = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3\
+                           VzIG11c2hyb29t";
 
     let bin = hex2bin(input);
     match bin {
