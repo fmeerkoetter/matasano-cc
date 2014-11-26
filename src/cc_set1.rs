@@ -63,7 +63,7 @@ fn set1_exercise1() -> Result<(), String> {
                            VzIG11c2hyb29t";
 
     let bin = try!(hex2bin(input));
-    assert!(to_base64(bin).as_slice() == expected_output);
+    assert_eq!(to_base64(bin).as_slice(), expected_output);
     Ok(())
 }
 
@@ -92,7 +92,7 @@ fn set1_exercise2() -> Result<(), String> {
     let lhs = try!(hex2bin("1c0111001f010100061a024b53535009181c"));
     let rhs = try!(hex2bin("686974207468652062756c6c277320657965"));
 
-    assert!(bin2hex(xor(lhs, rhs)).as_slice() == "746865206b696420646f6e277420706c6179");
+    assert_eq!(bin2hex(xor(lhs, rhs)).as_slice(), "746865206b696420646f6e277420706c6179");
     Ok(())
 }
 
