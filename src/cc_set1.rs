@@ -82,7 +82,7 @@ fn xor(lhs : Vec<u8>, rhs : Vec<u8>) -> Vec<u8> {
 }
 
 fn bin2hex(bin: Vec<u8>) -> String {
-    let mut result = String::new();
+    let mut result = String::with_capacity(bin.len() * 2);
     for b in bin.iter() {
         let hex = format!("{:x}", *b);
         result.push(hex.as_bytes()[0] as char);
