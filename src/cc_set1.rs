@@ -42,16 +42,12 @@ fn hex2bin(hex: &str) -> Result<Vec<u8>, String> {
     let mut accumulator : u8 = 0;
     let mut even = true;
     for c in hex.bytes() {
-        let b = map_hex(c);
-        if b.is_err() {
-            return Err(b.err().unwrap());
-        }
-        let x = b.ok().unwrap();
+        let b = try!(map_hex(c));
         if even {
-            accumulator = x << 4;
+            accumulator = b << 4;
         }
         else {
-            accumulator |= x;
+            accumulator |= b;
             bin.push(accumulator);
             accumulator = 0;
         }
