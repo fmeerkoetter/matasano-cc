@@ -7,7 +7,8 @@ fn to_base64(bin : Vec<u8>) -> String {
 
     let unpack6 = | c: uint, shift: uint | {
         let mask6bits = 0x3f;
-        let conversion_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".as_bytes();
+        let conversion_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs\
+                                tuvwxyz0123456789+/".as_bytes();
         conversion_table[((c >> shift) & mask6bits)] as char
     };
 
@@ -96,6 +97,45 @@ fn set1_exercise2() -> Result<(), String> {
     Ok(())
 }
 
+fn get_letter_freq_table_en() -> [uint, ..256] {
+    let mut freq_table = [0u, ..256];
+    // the chars in 'letters' are sorted by their relative frequency
+    // in english text
+    let letters = "etaoinshrdlcumwfgypbvkjxqz".as_bytes();
+    let mut score = letters.len();
+    for x in letters.iter() {
+        freq_table[*x as uint] = score;
+        //freq_table[std::char::to_uppercase(*x as char) as uint] = score;
+        score -= 1;
+    }
+    freq_table
+}
+
+fn set1_exercise3() -> Result<(), String> {
+    let cipher_text = try!(hex2bin("1b37373331363f78151b7f2b783431333d783978\
+                           28372d363c78373e783a393b3736"));
+    let freq_table = get_letter_freq_table_en();
+    // tuple contains 'score, potential cleartext, key'
+    let mut candidates : Vec<(uint, Vec<u8>, u8)> = Vec::with_capacity(255);
+    for candidate_key in range(0u8, 255) {
+        let mut tmp : Vec<u8> = Vec::with_capacity(cipher_text.len());
+        let mut score = 0u;
+        for c in cipher_text.iter() {
+            let d = *c ^ candidate_key;
+            score += freq_table[d as uint];
+            tmp.push(d);
+        }
+        candidates.push((score, tmp, candidate_key));
+    }
+    candidates.sort_by(| a, b | a.ref0().cmp(b.ref0()));
+
+    match std::str::from_utf8(candidates[254].ref1().as_slice()) {
+        Some(c) => println!("Key: {}, Cleartext: {}", candidates[254].ref2(), c),
+        None => return Err(String::from_str("from_utf8() failed")),
+    }     
+    Ok(())
+}
+
 fn main() {
     match set1_exercise1() {
         Ok(_)  => (),
@@ -103,6 +143,11 @@ fn main() {
     }
 
     match set1_exercise2() {
+        Ok(_)  => (),
+        Err(e) => println!("{}", e),
+    }
+
+    match set1_exercise3() {
         Ok(_)  => (),
         Err(e) => println!("{}", e),
     }
