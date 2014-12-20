@@ -141,6 +141,26 @@ fn set1_exercise3() -> Result<(), String> {
     Ok(())
 }
 
+fn set1_exercise4() -> Result<(), String> {
+    use std::io::BufferedReader;
+    use std::io::File;
+
+    let path = Path::new("4.txt");
+    let mut file = BufferedReader::new(File::open(&path));
+    let mut candidates : Vec<(uint, Vec<u8>, u8)> = Vec::new();
+    for line in file.lines() {
+        let cipher_text = try!(hex2bin(line.unwrap().as_slice().trim_right_chars('\n')));
+        candidates.push(brute_force_single_byte_xor(cipher_text));
+    }
+    candidates.sort_by(| a, b | a.ref0().cmp(b.ref0()));
+    let result = candidates.pop().unwrap();
+    match std::str::from_utf8(result.ref1().as_slice()) {
+        Some(c) => println!("Key: {}, Cleartext: {}", result.ref2(), c),
+        None => return Err(String::from_str("from_utf8() failed")),
+    }
+    Ok(())
+}
+
 fn main() {
     match set1_exercise1() {
         Ok(_)  => (),
@@ -153,6 +173,11 @@ fn main() {
     }
 
     match set1_exercise3() {
+        Ok(_)  => (),
+        Err(e) => println!("{}", e),
+    }
+    
+    match set1_exercise4() {
         Ok(_)  => (),
         Err(e) => println!("{}", e),
     }
