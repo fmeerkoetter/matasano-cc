@@ -111,9 +111,7 @@ fn get_letter_freq_table_en() -> [uint, ..256] {
     freq_table
 }
 
-fn set1_exercise3() -> Result<(), String> {
-    let cipher_text = try!(hex2bin("1b37373331363f78151b7f2b783431333d783978\
-                           28372d363c78373e783a393b3736"));
+fn brute_force_single_byte_xor(cipher_text: Vec<u8>) -> (uint, Vec<u8>, u8) {
     let freq_table = get_letter_freq_table_en();
     // tuple contains 'score, potential cleartext, key'
     let mut candidates : Vec<(uint, Vec<u8>, u8)> = Vec::with_capacity(255);
@@ -128,11 +126,18 @@ fn set1_exercise3() -> Result<(), String> {
         candidates.push((score, tmp, candidate_key));
     }
     candidates.sort_by(| a, b | a.ref0().cmp(b.ref0()));
+    candidates.pop().unwrap()
+}
 
-    match std::str::from_utf8(candidates[254].ref1().as_slice()) {
-        Some(c) => println!("Key: {}, Cleartext: {}", candidates[254].ref2(), c),
+fn set1_exercise3() -> Result<(), String> {
+    let cipher_text = try!(hex2bin("1b37373331363f78151b7f2b783431333d783978\
+                           28372d363c78373e783a393b3736"));
+    let result = brute_force_single_byte_xor(cipher_text);
+
+    match std::str::from_utf8(result.ref1().as_slice()) {
+        Some(c) => println!("Key: {}, Cleartext: {}", result.ref2(), c),
         None => return Err(String::from_str("from_utf8() failed")),
-    }     
+    }
     Ok(())
 }
 
