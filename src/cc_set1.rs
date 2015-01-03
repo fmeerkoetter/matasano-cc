@@ -98,17 +98,24 @@ fn set1_exercise2() -> Result<(), String> {
 }
 
 fn get_letter_freq_table_en() -> [uint, ..256] {
-    let mut freq_table = [0u, ..256];
-    // the chars in 'letters' are sorted by their relative frequency
-    // in english text
-    let letters = "etaoinshrdlcumwfgypbvkjxqz".as_bytes();
-    let mut score = letters.len();
-    for x in letters.iter() {
-        freq_table[*x as uint] = score;
-        //freq_table[std::char::to_uppercase(*x as char) as uint] = score;
-        score -= 1;
+    // unsafe is needed so I can have a mutable static :-/
+    unsafe {
+        static mut initialized : bool = false;
+        static mut freq_table : [uint, ..256] = [0u, ..256];
+        if !initialized {
+            // the chars in 'letters' are sorted by their relative frequency
+            // in english text
+            let letters = "etaoinshrdlcumwfgypbvkjxqz".as_bytes();
+            let mut score = letters.len();
+            for x in letters.iter() {
+                freq_table[*x as uint] = score;
+                //freq_table[std::char::to_uppercase(*x as char) as uint] = score;
+                score -= 1;
+            }
+            initialized = true;
+        }
+        freq_table
     }
-    freq_table
 }
 
 fn brute_force_single_byte_xor(cipher_text: Vec<u8>) -> (uint, Vec<u8>, u8) {
